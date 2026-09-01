@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DapurWarmth - Katalog Resep Kuliner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           VARIABLES & BASE STYLES
+           ========================================== */
+        :root {
+            --color-primary: #3E2723;     /* Coklat Tua Espresso */
+            --color-secondary: #8D6E63;   /* Coklat Warm */
+            --color-accent: #C17817;      /* Coklat Keemasan/Caramel */
+            --color-bg-main: #F5F2EB;     /* Off-White Cream */
+            --color-card-bg: #FFFFFF;     /* Putih */
+            --color-text-dark: #2B1E1A;
+            --color-text-light: #6D5C58;
+            --font-main: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg-main);
+            color: var(--color-text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .page-section {
+            display: none; /* Sembunyikan halaman secara bawaan */
+        }
+
+        .page-section.active-page {
+            display: block; /* Tampilkan halaman aktif */
+        }
+
+        /* ==========================================
+           NAVIGATION
+           ========================================== */
+        .main-header {
+            background-color: var(--color-card-bg);
+            box-shadow: 0 2px 10px rgba(62, 39, 35, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--color-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-dark);
+            font-weight: 600;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-accent);
+        }
+
+        /* ==========================================
+           HERO & BUTTONS
+           ========================================== */
+        .hero {
+            background: linear-gradient(rgba(62, 39, 35, 0.75), rgba(62, 39, 35, 0.75)), 
+                        url('https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 5rem 1rem;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary);
+        }
+
+        /* ==========================================
+           CATEGORIES & CARDS
+           ========================================== */
+        .categories-preview, .popular-recipes {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            color: var(--color-primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background-color: var(--color-card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(141, 110, 99, 0.15);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-accent);
+        }
+
+        .category-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .recipe-card {
+            background-color: var(--color-card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid rgba(141, 110, 99, 0.12);
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card-image {
+            height: 190px;
+            background-size: cover;
+            background-position: center;
+            padding: 1rem;
+        }
+
+        .badge {
+            background-color: rgba(62, 39, 35, 0.85);
+            color: #FFFFFF;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.2rem;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-body h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-body p {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-read {
+            display: block;
+            text-align: center;
+            background-color: var(--color-bg-main);
+            color: var(--color-primary);
+            text-decoration: none;
+            padding: 0.6rem 0;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-read:hover {
+            background-color: var(--color-accent);
+            color: #FFFFFF;
+        }
+
+        /* ==========================================
+           SEARCH & FILTER (KATALOG)
+           ========================================== */
+        .catalog-header {
+            text-align: center;
+            padding: 3rem 0 1rem 0;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 1.5rem auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 30px;
+            border: 2px solid rgba(141, 110, 99, 0.3);
+            outline: none;
+            font-size: 1rem;
+            font-family: var(--font-main);
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            background-color: var(--color-card-bg);
+            border: 1px solid rgba(141, 110, 99, 0.3);
+            color: var(--color-primary);
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: var(--font-main);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--color-primary);
+            color: #FFFFFF;
+        }
+
+        /* ==========================================
+           DETAIL RECIPE STYLES
+           ========================================== */
+        .detail-container {
+            padding: 2rem 0 5rem 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .recipe-header-card {
+            background-color: var(--color-card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(141, 110, 99, 0.15);
+            margin-bottom: 2.5rem;
+        }
+
+        .recipe-hero-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .recipe-header-info {
+            padding: 2rem;
+        }
+
+        .recipe-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(141, 110, 99, 0.2);
+            margin-top: 1rem;
+        }
+
+        .recipe-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .recipe-content-grid { grid-template-columns: 1fr; }
+        }
+
+        .ingredients-box, .instructions-box {
+            background-color: var(--color-card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .ingredients-list { list-style: none; }
+        .ingredients-list li { margin-bottom: 0.8rem; }
+        .ingredients-list label { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; }
+        .ingredients-list input[type="checkbox"]:checked + span { text-decoration: line-through; opacity: 0.5; }
+
+        .instructions-list { list-style: none; counter-reset: step-counter; }
+        .instructions-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        .instructions-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0; top: 0;
+            width: 32px; height: 32px;
+            background-color: var(--color-primary);
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+        }
+
+        /* ==========================================
+           ABOUT & CONTACT STYLES
+           ========================================== */
+        .about-container { padding: 3rem 0 5rem 0; max-width: 800px; }
+        .about-hero { text-align: center; margin-bottom: 3rem; }
+        .contact-card {
+            background-color: var(--color-card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.8rem 1rem;
+            border: 1px solid rgba(141, 110, 99, 0.3);
+            border-radius: 10px; font-family: var(--font-main);
+        }
+
+        .alert {
+            margin-top: 1rem; padding: 0.8rem 1rem;
+            border-radius: 8px; background-color: #E8F5E9;
+            color: #2E7D32; font-weight: 600; text-align: center;
+        }
+
+        .main-footer {
+            background-color: var(--color-primary);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="main-header">
+        <div class="container navbar">
+            <div class="logo" onclick="navigateTo('beranda')">Dapur<span>Warmth</span></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a id="nav-beranda" class="active" onclick="navigateTo('beranda')">Beranda</a></li>
+                    <li><a id="nav-katalog" onclick="navigateTo('katalog')">Katalog Resep</a></li>
+                    <li><a id="nav-tentang" onclick="navigateTo('tentang')">Tentang</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- SECTION 1: BERANDA -->
+    <section id="page-beranda" class="page-section active-page">
+        <div class="hero">
+            <div class="container hero-content">
+                <h1>Cita Rasa Warmth di Setiap Sajian</h1>
+                <p>Jelajahi koleksi resep pilihan dengan panduan langkah demi langkah yang mudah diikuti di rumah.</p>
+                <button class="btn btn-primary" onclick="navigateTo('katalog')">Lihat Katalog Resep</button>
+            </div>
+        </div>
+
+        <div class="categories-preview container">
+            <h2 class="section-title">Kategori Pilihan</h2>
+            <div class="category-grid">
+                <div class="category-card" onclick="filterByCategory('utama')">
+                    <div class="icon">🍲</div>
+                    <h3>Makanan Utama</h3>
+                </div>
+                <div class="category-card" onclick="filterByCategory('dessert')">
+                    <div class="icon">🍰</div>
+                    <h3>Dessert</h3>
+                </div>
+                <div class="category-card" onclick="filterByCategory('minuman')">
+                    <div class="icon">☕</div>
+                    <h3>Minuman</h3>
+                </div>
+                <div class="category-card" onclick="filterByCategory('sehat')">
+                    <div class="icon">🥗</div>
+                    <h3>Makanan Sehat</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: KATALOG RESEP -->
+    <section id="page-katalog" class="page-section">
+        <div class="catalog-header container">
+            <h1>Jelajahi Resep Kuliner</h1>
+            <p>Cari masakan favoritmu berdasarkan nama bahan atau kategori tertentu.</p>
+
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Cari resep... (misal: Ayam, Salad, Roti)">
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" data-category="semua">Semua</button>
+                <button class="filter-btn" data-category="utama">Makanan Utama</button>
+                <button class="filter-btn" data-category="dessert">Dessert</button>
+                <button class="filter-btn" data-category="minuman">Minuman</button>
+                <button class="filter-btn" data-category="sehat">Makanan Sehat</button>
+            </div>
+        </div>
+
+        <main class="container">
+            <div class="recipe-grid" id="recipe-grid"></div>
+            <div id="no-result" class="hidden" style="text-align: center; padding: 2rem;">
+                <p>Resep yang kamu cari tidak ditemukan 🙁</p>
+            </div>
+        </main>
+    </section>
+
+    <!-- SECTION 3: DETAIL RESEP -->
+    <section id="page-detail" class="page-section">
+        <main class="container detail-container">
+            <span class="back-link" onclick="navigateTo('katalog')">← Kembali ke Katalog</span>
+            <div id="recipe-detail-wrapper"></div>
+        </main>
+    </section>
+
+    <!-- SECTION 4: TENTANG KAMI -->
+    <section id="page-tentang" class="page-section">
+        <main class="container about-container">
+            <div class="about-hero">
+                <h1>Hangatkan Rumah Lewat Masakan</h1>
+                <p>DapurWarmth hadir untuk menginspirasi siapa saja agar bisa menyajikan hidangan lezat dan bernutrisi bagi keluarga.</p>
+            </div>
+
+            <div class="contact-card">
+                <h2>Kirim Pesan & Saran</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="nama">Nama Lengkap</label>
+                        <input type="text" id="nama" required placeholder="Nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required placeholder="email@contoh.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="pesan">Pesan / Resep Impian</label>
+                        <textarea id="pesan" rows="4" required placeholder="Tuliskan pesan Anda..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Kirim Pesan</button>
+                </form>
+                <div id="form-alert" class="alert hidden">Pesan Anda berhasil terkirim! Terima kasih.</div>
+            </div>
+        </main>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2026 DapurWarmth. Dibuat dengan penuh rasa hangat.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Database Resep
+        const recipes = [
+            {
+                id: 1,
+                title: "Salad Segar Saus Wijen",
+                category: "sehat",
+                time: "20 Min",
+                servings: "2 Porsi",
+                difficulty: "Mudah",
+                description: "Salad sayuran renyah dipadukan dengan saus wijen sangrai khas Jepang.",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80",
+                ingredients: [
+                    "100g Selada Romaine",
+                    "1/2 buah Mentimun",
+                    "5 buah Tomat ceri",
+                    "3 sdm Saus Wijen Sangrai"
+                ],
+                steps: [
+                    "Cuci bersih semua sayuran.",
+                    "Potong sayuran sesuai selera.",
+                    "Tata di atas mangkuk dan siram saus wijen."
+                ]
+            },
+            {
+                id: 2,
+                title: "Ayam Bakar Bumbu Rempah",
+                category: "utama",
+                time: "45 Min",
+                servings: "4 Porsi",
+                difficulty: "Sedang",
+                description: "Ayam bakar tradisional diungkep bumbu halus hingga meresap sempurna.",
+                image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80",
+                ingredients: [
+                    "1 ekor Ayam potong 4",
+                    "300ml Air kelapa",
+                    "3 sdm Kecap manis",
+                    "Bumbu halus rempah"
+                ],
+                steps: [
+                    "Tumis bumbu halus hingga harum.",
+                    "Ungkep ayam bersama bumbu dan air kelapa.",
+                    "Bakar ayam sambil diolesi sisa bumbu."
+                ]
+            },
+            {
+                id: 3,
+                title: "Roti Kayu Manis Klasik",
+                
